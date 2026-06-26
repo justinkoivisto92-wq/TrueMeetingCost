@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY || '';
+
 
 const PURPOSE_LABELS = {
   deal: 'Close a Deal', decision: 'Make a Key Decision', strategy: 'Strategic Planning',
@@ -36,29 +36,16 @@ export default function AIAnalysis({ meetingData }) {
   const [error, setError] = useState('');
 
   const generate = async () => {
-    if (!API_KEY) {
-      setError('AI analysis is not yet configured. Check back soon.');
-      return;
-    }
     setLoading(true);
     setError('');
     setMemo('');
 
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'x-api-key': API_KEY,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 512,
-          messages: [{ role: 'user', content: buildPrompt(meetingData) }],
-        }),
-      });
+const res = await fetch('/api/analyze', {
+  method: 'POST',
+  headers: { 'content-type': 'application/json' },
+  body: JSON.stringify({ prompt: buildPrompt(meetingData) }),
+});
 
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
@@ -66,7 +53,7 @@ export default function AIAnalysis({ meetingData }) {
       }
 
       const data = await res.json();
-      setMemo(data.content?.[0]?.text || '');
+      setMemo(data.result || '');
     } catch (e) {
       setError(e.message || 'Failed to generate analysis. Please try again.');
     } finally {
