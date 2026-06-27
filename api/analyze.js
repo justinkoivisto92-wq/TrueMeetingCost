@@ -22,10 +22,11 @@ const { prompt } = body;
       }),
     });
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      return res.status(response.status).json({ error: err?.error?.message || 'Anthropic API error' });
-    }
+   if (!response.ok) {
+  const err = await response.json().catch(() => ({}));
+  console.error('Anthropic error:', JSON.stringify(err));
+  return res.status(response.status).json({ error: err?.error?.message || JSON.stringify(err) });
+}
 
     const data = await response.json();
     return res.status(200).json({ result: data.content?.[0]?.text || '' });
