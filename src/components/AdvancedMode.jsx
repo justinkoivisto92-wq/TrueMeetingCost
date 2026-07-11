@@ -53,6 +53,15 @@ export default function AdvancedMode() {
     }
   }, []);
 
+const [roster, setRoster] = useState([]);
+
+useEffect(() => {
+  fetch('/api/employees/list')
+    .then(r => r.json())
+    .then(data => setRoster(data.employees || []))
+    .catch(() => {});
+}, []);
+
   const updateAttendee = (id, field, value) =>
     setAttendees(prev => prev.map(a => a.id === id ? { ...a, [field]: value } : a));
 
@@ -207,15 +216,36 @@ export default function AdvancedMode() {
           {attendees.map((a, idx) => (
             <div className="attendee-row" key={a.id}>
               <div className="field">
-                <label className="field-label">Name</label>
-                <input
-                  type="text"
-                  className="field-input"
-                  value={a.name}
-                  onChange={e => updateAttendee(a.id, 'name', e.target.value)}
-                  placeholder={`Attendee ${idx + 1}`}
-                />
-              </div>
+  <label className="field-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
+    Name
+    {roster.length > 0 && (
+      <select
+        style={{ fontSize: 11, fontWeight: 400, color: 'var(--navy)', border: 'none', background: 'none', cursor: 'pointer' }}
+        value=""
+        onChange={e => {
+          const emp = roster.find(r => String(r.id) === e.target.value);
+          if (emp) {
+            updateAttendee(a.id, 'name', emp.name);
+            updateAttendee(a.id, 'role', emp.title || '');
+            updateAttendee(a.id, 'salary', String(emp.annual_salary || ''));
+          }
+        }}
+      >
+        <option value="">+ From roster</option>
+        {roster.map(emp => (
+          <option key={emp.id} value={emp.id}>{emp.name}</option>
+        ))}
+      </select>
+    )}
+  </label>
+  <input
+    type="text"
+    className="field-input"
+    value={a.name}
+    onChange={e => updateAttendee(a.id, 'name', e.target.value)}
+    placeholder={`Attendee ${idx + 1}`}
+  />
+</div>
               <div className="field">
                 <label className="field-label">Role / Title</label>
                 <input
