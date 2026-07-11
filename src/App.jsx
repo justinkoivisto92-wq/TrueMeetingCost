@@ -1,13 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import './App.css';
 import SimpleMode from './components/SimpleMode';
 import AdvancedMode from './components/AdvancedMode';
 import MyFootprintMode from './components/MyFootprintMode';
+import MyTeam from './components/MyTeam';
 
 const MODES = [
   { id: 'simple',   label: 'Simple',       description: 'Quick cost estimate with average salary' },
   { id: 'advanced', label: 'Advanced',      description: 'Build the room — cost breakdown per person' },
   { id: 'footprint', label: 'My Footprint', description: 'Your personal meeting cost & ROI' },
+  { id: 'myteam', label: 'My Team', description: 'Manage your employee roster' },
 ];
 
 export default function App() {
@@ -45,6 +47,7 @@ export default function App() {
         {mode === 'simple'    && <SimpleMode />}
         {mode === 'advanced'  && <AdvancedMode />}
         {mode === 'footprint' && <MyFootprintMode />}
+        {mode === 'myteam' && <MyTeam />}
       </main>
 
       <footer style={{
