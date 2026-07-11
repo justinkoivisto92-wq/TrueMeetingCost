@@ -220,7 +220,7 @@ useEffect(() => {
     Name
     {roster.length > 0 && (
       <select
-        style={{ fontSize: 11, fontWeight: 400, color: 'var(--navy)', border: 'none', background: 'none', cursor: 'pointer' }}
+        style={{ fontSize: 12, fontWeight: 600, color: 'var(--navy)', border: '1px solid var(--navy)', borderRadius: 4, background: 'none', cursor: 'pointer', padding: '1px 6px' }}
         value=""
         onChange={e => {
           const emp = roster.find(r => String(r.id) === e.target.value);
