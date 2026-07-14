@@ -21,7 +21,7 @@ export default function App() {
   return (
     <div className="app">
       <header className="header">
-        <div className="header-inner">
+        <div className="header-inner" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between' }}>
           <div className="header-brand">
             <span className="header-logo">
               True Meeting Cost<span className="header-dot">.</span>
@@ -41,7 +41,7 @@ export default function App() {
               </button>
             ))}
           </nav>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 16 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <SignedOut>
               <SignInButton mode="modal">
                 <button className="mode-tab" style={{ background: 'rgba(255,255,255,0.15)' }}>
