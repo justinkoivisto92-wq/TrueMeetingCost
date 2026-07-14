@@ -4,6 +4,7 @@ import SimpleMode from './components/SimpleMode';
 import AdvancedMode from './components/AdvancedMode';
 import MyFootprintMode from './components/MyFootprintMode';
 import MyTeam from './components/MyTeam';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 const MODES = [
   { id: 'simple',   label: 'Simple',       description: 'Quick cost estimate with average salary' },
@@ -27,7 +28,7 @@ export default function App() {
             </span>
             <span className="header-tagline">Know what your meetings really cost.</span>
           </div>
-          <nav className="mode-tabs" role="tablist" aria-label="Calculator mode">
+<nav className="mode-tabs" role="tablist" aria-label="Calculator mode">
             {MODES.map(m => (
               <button
                 key={m.id}
@@ -40,6 +41,18 @@ export default function App() {
               </button>
             ))}
           </nav>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 16 }}>
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="mode-tab" style={{ background: 'rgba(255,255,255,0.15)' }}>
+                  Sign In
+                </button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+          </div>
         </div>
       </header>
 
