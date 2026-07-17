@@ -8,6 +8,7 @@ import {
   Field, CurrencyInput, DurationSelect, FrequencySelect,
   PurposeSelect, IndustrySelect, ROIVerdict, MetricCard
 } from './SharedInputs';
+import { useUser } from '@clerk/clerk-react';
 import EfficiencyScore from './EfficiencyScore';
 import IndustryBenchmarks from './IndustryBenchmarks';
 import ScenarioModeling from './ScenarioModeling';
@@ -53,14 +54,16 @@ export default function AdvancedMode() {
     }
   }, []);
 
+const { user } = useUser();
 const [roster, setRoster] = useState([]);
 
 useEffect(() => {
-  fetch('/api/employees/list')
+  if (!user) return;
+  fetch('/api/employees/list', { headers: { 'x-user-id': user.id } })
     .then(r => r.json())
     .then(data => setRoster(data.employees || []))
     .catch(() => {});
-}, []);
+}, [user]);
 
   const updateAttendee = (id, field, value) =>
     setAttendees(prev => prev.map(a => a.id === id ? { ...a, [field]: value } : a));
