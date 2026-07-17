@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { useUser, SignedIn, SignedOut } from '@clerk/clerk-react';
 
 const DEPARTMENTS = ['Engineering', 'Sales', 'Marketing', 'Operations', 'Finance', 'HR', 'Executive', 'Other'];
 
 export default function MyTeam() {
+const { user, isLoaded } = useUser();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -11,12 +13,14 @@ export default function MyTeam() {
   const [form, setForm] = useState({ name: '', title: '', department: '', annual_salary: '' });
 
   useEffect(() => {
-    fetchEmployees();
-  }, []);
+    if (isLoaded && user) fetchEmployees();
+  }, [isLoaded, user]);
 
   const fetchEmployees = async () => {
     try {
-      const res = await fetch('/api/employees/list');
+      const res = await fetch('/api/employees/list', {
+        headers: { 'x-user-id': user.id },
+      });
       const data = await res.json();
       setEmployees(data.employees || []);
     } catch (e) {
@@ -33,7 +37,7 @@ export default function MyTeam() {
     try {
       const res = await fetch('/api/employees/save', {
         method: 'POST',
-        headers: { 'content-type': 'application/json' },
+        headers: { 'content-type': 'application/json', 'x-user-id': user.id },
         body: JSON.stringify({
           ...form,
           annual_salary: form.annual_salary ? parseInt(form.annual_salary) : null,
@@ -58,7 +62,11 @@ export default function MyTeam() {
     return acc;
   }, {});
 
+  if (!isLoaded) return null;
+
   return (
+    <>
+    <SignedIn>
     <div style={{ maxWidth: 800, margin: '0 auto', padding: '32px 16px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
@@ -159,5 +167,16 @@ export default function MyTeam() {
         </div>
       ))}
     </div>
+    </SignedIn>
+    <SignedOut>
+      <div style={{ maxWidth: 500, margin: '80px auto', textAlign: 'center', padding: '0 16px' }}>
+        <p style={{ fontSize: 32, marginBottom: 12 }}>🔒</p>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Sign in to manage your team</h2>
+        <p style={{ fontSize: 14, color: 'var(--gray-500)' }}>
+          Create a free account to save your employee roster and quickly fill in meeting attendees.
+        </p>
+      </div>
+    </SignedOut>
+    </>
   );
 }
