@@ -4,6 +4,7 @@ import SimpleMode from './components/SimpleMode';
 import AdvancedMode from './components/AdvancedMode';
 import MyFootprintMode from './components/MyFootprintMode';
 import MyTeam from './components/MyTeam';
+import Profile from './components/Profile';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 const MODES = [
@@ -41,7 +42,7 @@ export default function App() {
               </button>
             ))}
           </nav>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+<div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <SignedOut>
               <SignInButton mode="modal">
                 <button className="mode-tab" style={{ background: 'rgba(255,255,255,0.15)' }}>
@@ -50,6 +51,13 @@ export default function App() {
               </SignInButton>
             </SignedOut>
             <SignedIn>
+              <button
+                className="mode-tab"
+                onClick={() => setMode('profile')}
+                style={{ background: mode === 'profile' ? 'rgba(255,255,255,0.25)' : 'transparent' }}
+              >
+                Profile
+              </button>
               <UserButton afterSignOutUrl="/" />
             </SignedIn>
           </div>
@@ -61,6 +69,7 @@ export default function App() {
         {mode === 'advanced'  && <AdvancedMode />}
         {mode === 'footprint' && <MyFootprintMode />}
         {mode === 'myteam' && <MyTeam />}
+        {mode === 'profile' && <Profile />}
       </main>
 
       <footer style={{
